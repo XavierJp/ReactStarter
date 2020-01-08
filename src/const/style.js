@@ -3,6 +3,10 @@ export default {
     lightBlue: "#186bff",
     white: "#fff",
 
+    infoBlue: "#789bff",
+    warningOrange: "#ffc92c",
+    errorRed: "#ff7878",
+
     // solraized
     base03: "#002b36",
     base02: "#073642",

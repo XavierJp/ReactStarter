@@ -1,7 +1,10 @@
+import React from "react";
 import styled from "styled-components";
-import style from "../const/style";
 
-const Button = styled.button`
+import style from "src/const/style";
+import Spinner from "src/uiComponents/Spinner";
+
+const ButtonWrapper = styled.button`
   display: inline-block;
   border-radius: 4px;
   padding: 12px 20px;
@@ -43,5 +46,17 @@ const Button = styled.button`
       0 -100px 0 rgba(0, 0, 0, 0.15) inset;
   }
 `;
+
+interface IProps {
+  isLoading: boolean;
+}
+
+const Button: React.FC<IProps> = props => {
+  return (
+    <ButtonWrapper>
+      {props.isLoading ? props.children : <Spinner />}
+    </ButtonWrapper>
+  );
+};
 
 export default Button;
