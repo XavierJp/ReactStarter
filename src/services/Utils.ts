@@ -3,8 +3,14 @@
  * @param {*} url
  * @param {*} body
  * @param {*} callback
+ * @param {*} errrorCallback
  */
-const post = (url: string, body: any, callback: (json: any) => void) => {
+const post = (
+  url: string,
+  body: any,
+  callback: (json: any) => void,
+  errorCallback: (json: any) => void = () => {}
+) => {
   fetch(url, {
     method: "POST",
     headers: {
@@ -12,8 +18,14 @@ const post = (url: string, body: any, callback: (json: any) => void) => {
     },
     body: JSON.stringify(body)
   })
-    .then(res => res.json())
-    .then(json => callback(json));
+    .then(res => {
+      if (!res.ok) {
+        throw new Error();
+      }
+      return res.json();
+    })
+    .then(json => callback(json))
+    .catch(err => errorCallback(err));
 };
 
 /**

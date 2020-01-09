@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { UserContext } from "../context";
+import { UserContext, actions } from "src/context/User";
 import style from "../const/style";
 
 const Bar = styled.div`
@@ -44,32 +44,31 @@ const RightNav = styled.nav`
   }
 `;
 
-const NavBar: React.FC<{}> = () => (
-  <UserContext.Consumer>
-    {({ isLoggedIn, logout, user }) => {
-      return (
-        <Bar>
-          <LeftNav>{user && `Hello ${user.name} 🤓`}</LeftNav>
-          <RightNav>
-            {isLoggedIn && isLoggedIn() ? (
-              <Link to="/" onClick={logout}>
-                Log out
-              </Link>
-            ) : (
-              <>
-                <Link className="login" to="/login">
-                  Log in
-                </Link>
-                <Link className="signup" to="/signup">
-                  Sign up
-                </Link>
-              </>
-            )}
-          </RightNav>
-        </Bar>
-      );
-    }}
-  </UserContext.Consumer>
-);
+const NavBar: React.FC<{}> = () => {
+  //@ts-ignore
+  const [{ user }, dispatch] = useContext(UserContext);
+
+  return (
+    <Bar>
+      <LeftNav>{user && `Hello ${user.name} 🤓`}</LeftNav>
+      <RightNav>
+        {user ? (
+          <Link to="/" onClick={() => dispatch(actions.logout())}>
+            Se déconnecter
+          </Link>
+        ) : (
+          <>
+            <Link className="login" to="/login">
+              Se connecter
+            </Link>
+            <Link className="signup" to="/signup">
+              S’inscrire
+            </Link>
+          </>
+        )}
+      </RightNav>
+    </Bar>
+  );
+};
 
 export default NavBar;

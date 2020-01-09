@@ -48,13 +48,14 @@ const ButtonWrapper = styled.button`
 `;
 
 interface IProps {
-  isLoading: boolean;
+  isLoading?: boolean;
+  type: "button" | "submit" | "reset" | undefined;
 }
 
 const Button: React.FC<IProps> = props => {
   return (
-    <ButtonWrapper>
-      {props.isLoading ? props.children : <Spinner />}
+    <ButtonWrapper type={props.type}>
+      {!props.isLoading ? <>{props.children}</> : <Spinner />}
     </ButtonWrapper>
   );
 };

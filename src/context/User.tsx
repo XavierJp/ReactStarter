@@ -1,8 +1,7 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 
-import urls from "../const/urls";
-import { apiUtils } from "../services";
 import { AlertContext } from "./Alerts";
+// , actions as alertActions, Level
 
 interface User {
   name: string;
@@ -12,15 +11,11 @@ interface IState {
   user: User | null;
 }
 
-/**
- * I don't feel the need for a reducer. User management only happens from two pages (login & signup)
- * Every other time it is only read access to user info that is needed
- */
-const initialState: IState = {
-  user: null,
+const initialValue: IState = {
+  user: null
 };
 
-export const UserContext = React.createContext(initialState);
+export const UserContext = React.createContext(initialValue);
 
 export const actions = {
   login: (token: string, username: string) => {
@@ -34,12 +29,13 @@ export const actions = {
   },
   logout: () => {
     return {
-      type: "LOG_OUT",
+      type: "LOG_OUT"
     };
   }
 };
 
 export const userReducer = (state: IState, action: any) => {
+  console.log(action);
   switch (action.type) {
     case "LOG_IN":
       saveAuthentication(action.payload.token, action.payload.password);
@@ -59,57 +55,48 @@ export const userReducer = (state: IState, action: any) => {
 const clearAuthentication = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-}
+};
 
 const saveAuthentication = (token: string, username: string) => {
   localStorage.setItem("token", token);
   localStorage.setItem("user", username);
 };
 
-
-const UserProvider: React.FC<{}> = () => {
+const UserProvider: React.FC<{}> = props => {
   //@ts-ignore
   const [state, dispatch] = useContext(AlertContext);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
+    // if (token) {
+    //   fetch(urls.currentUser, {
+    //     headers: {
+    //       Authorization: `JWT ${token}`
+    //     }
+    //   })
+    //     .then(res => {
+    //       if (!res.ok) {
+    //         console.log(res);
+    //         dispatch(alertActions.new(Level.ERROR, JSON.stringify(res)));
+    //         // token has expired
+    //         // need error management here
+    //         // logout();
+    //       }
+    //       return res.json();
+    //     })
+    //     .then(json => {
+    //       saveAuthentication(token, json.username);
+    //     });
+    // }
+    // return () => {};
+  });
 
-  if (token) {
-    fetch(urls.currentUser, {
-      headers: {
-        Authorization: `JWT ${token}`
-      }
-    })
-      .then(res => {
-        if (!res.ok) {
-          console.log(res);
-
-
-          // token has expired
-          // need error management here
-          this.logout();
-        }
-        return res.json();
-      })
-      .then(json => {
-        this.saveAuthentication(token, json.username);
-      });
-  }
-  return () => {};
-});
-
-
-  const value = useReducer(userReducer, initialValue)
-
+  const value = useReducer(userReducer, initialValue);
   return (
-    <AlertContext
-    <UserContext.Provider value={value}>
-      {this.props.children}
-    </UserContext.Provider>
+    //@ts-ignore
+    <UserContext.Provider value={value}>{props.children}</UserContext.Provider>
   );
-}
-
-
+};
 
 //@ts-ignore
 export default UserProvider;

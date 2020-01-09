@@ -1,4 +1,4 @@
-import React, { useRef, FormEvent, useContext } from "react";
+import React, { useRef, FormEvent, useContext, useState } from "react";
 
 import FormWrapper from "src/components/FormWrapper";
 import Button from "src/components/Button";
@@ -11,8 +11,9 @@ const SignupForm: React.FC<{}> = () => {
   const userInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
 
+  //@ts-ignore
   const [state, dispatch] = useContext(UserContext);
-  const [loader, setLoader] = useContext(true);
+  const [loader, setLoader] = useState(false);
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -27,10 +28,12 @@ const SignupForm: React.FC<{}> = () => {
     };
 
     setLoader(true);
-    apiUtils.post(urls.signup, data, (json: any) => {
-      dispatch(actions.login(json.token, json.user.username));
-      setLoader(false);
-    });
+    window.setTimeout(() => {
+      apiUtils.post(urls.signup, data, (json: any) => {
+        setLoader(false);
+        dispatch(actions.login(json.token, json.user.username));
+      });
+    }, 300);
     //need error management
   };
 
@@ -41,7 +44,9 @@ const SignupForm: React.FC<{}> = () => {
       <input type="text" ref={userInput} name="username" />
       <label htmlFor="password">Password</label>
       <input type="password" name="password" ref={passwordInput} />
-      <Button type="submit">Go !</Button>
+      <Button type="submit" isLoading={loader}>
+        Go !
+      </Button>
     </FormWrapper>
   );
 };

@@ -83,12 +83,9 @@ const AlertItem: React.FC<IProps> = props => {
   const alertDuration = 5000;
 
   const animateAndDismiss = () => {
-    console.log("animateAndDismiss");
     const elem = wrapper && wrapper.current;
 
     if (elem) {
-      console.log("animate");
-
       //@ts-ignore
       elem.animate(
         [

@@ -51,7 +51,6 @@ export const alertReducer = (state: IState, action: any) => {
         alerts: newAlerts
       };
     case "DISMISS_ALERT":
-      console.log(action);
       const keyToRemove = alertKey(action.payload);
       newAlerts.delete(keyToRemove);
 

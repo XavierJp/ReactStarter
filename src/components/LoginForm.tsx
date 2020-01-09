@@ -1,9 +1,14 @@
-import React, { useRef, FormEvent, useContext } from "react";
+import React, { useRef, FormEvent, useContext, useState } from "react";
+import { useHistory } from "react-router";
 
 import FormWrapper from "src/components/FormWrapper";
 import Button from "src/components/Button";
-import { UserContext } from "src/context";
-import { actions } from "src/context/User";
+import UserContext, { actions as userActions } from "src/context/User";
+import AlertContext, {
+  actions as alertActions,
+  Level
+} from "src/context/Alerts";
+
 import urls from "../const/urls";
 import { apiUtils } from "../services";
 
@@ -11,8 +16,12 @@ const LoginForm: React.FC<{}> = () => {
   const userInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
 
+  //@ts-ignore
   const [state, dispatch] = useContext(UserContext);
-  const [loader, setLoader] = useContext(true);
+  //@ts-ignore
+  const alertCtxt = useContext(AlertContext);
+  const [loader, setLoader] = useState(false);
+  const history = useHistory();
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -26,11 +35,23 @@ const LoginForm: React.FC<{}> = () => {
       password: passwordInput.current.value
     };
 
+    console.log(dispatch, state);
     setLoader(true);
-    apiUtils.post(urls.login, data, (json: any) => {
-      dispatch(actions.login(json.token, json.user.username));
-      setLoader(false);
-    });
+    window.setTimeout(() => {
+      apiUtils.post(
+        urls.login,
+        data,
+        (json: any) => {
+          setLoader(false);
+          dispatch(userActions.login(json.token, json.user.username));
+          history.push("/");
+        },
+        errorMsg => {
+          setLoader(false);
+          alertCtxt.dispatch(alertActions.new(Level.ERROR, errorMsg));
+        }
+      );
+    }, 300);
     //need error management
   };
 
