@@ -1,7 +1,8 @@
 import React, { useRef, FormEvent, useContext, useState } from "react";
 
 import FormWrapper from "src/components/FormWrapper";
-import Button from "src/components/Button";
+import Button from "src/uiComponents/Button";
+import TextInput from "src/uiComponents/TextInput";
 import { UserContext } from "src/context";
 import { actions } from "src/context/User";
 import urls from "../const/urls";
@@ -12,7 +13,7 @@ const SignupForm: React.FC<{}> = () => {
   const passwordInput = useRef<HTMLInputElement>(null);
 
   //@ts-ignore
-  const [state, dispatch] = useContext(UserContext);
+  const [{ user }, dispatch] = useContext(UserContext);
   const [loader, setLoader] = useState(false);
 
   const submit = (e: FormEvent) => {
@@ -39,14 +40,24 @@ const SignupForm: React.FC<{}> = () => {
 
   return (
     <FormWrapper onSubmit={submit}>
-      <h4>Sign Up</h4>
-      <label htmlFor="username">Username</label>
-      <input type="text" ref={userInput} name="username" />
-      <label htmlFor="password">Password</label>
-      <input type="password" name="password" ref={passwordInput} />
-      <Button type="submit" isLoading={loader}>
-        Go !
-      </Button>
+      <h4>Inscription</h4>
+      <TextInput
+        name="username"
+        placeholder="John Doe"
+        label="Nom d'utilisateur"
+        type="text"
+        //@ts-ignore
+        ref={userInput}
+      />
+      <TextInput
+        name="password"
+        placeholder="mot de passe"
+        label="Mot de passe"
+        type="password"
+        //@ts-ignore
+        ref={passwordInput}
+      />
+      <Button type="submit" isLoading={loader} value="Ok" />
     </FormWrapper>
   );
 };

@@ -2,12 +2,11 @@ import React, { useRef, FormEvent, useContext, useState } from "react";
 import { useHistory } from "react-router";
 
 import FormWrapper from "src/components/FormWrapper";
-import Button from "src/components/Button";
-import UserContext, { actions as userActions } from "src/context/User";
-import AlertContext, {
-  actions as alertActions,
-  Level
-} from "src/context/Alerts";
+import Button from "src/uiComponents/Button";
+import TextInput from "src/uiComponents/TextInput";
+import { UserContext, AlertContext } from "src/context";
+import { actions as userActions } from "src/context/User";
+import { actions as alertsActions, Level } from "src/context/Alerts";
 
 import urls from "../const/urls";
 import { apiUtils } from "../services";
@@ -17,9 +16,9 @@ const LoginForm: React.FC<{}> = () => {
   const passwordInput = useRef<HTMLInputElement>(null);
 
   //@ts-ignore
-  const [state, dispatch] = useContext(UserContext);
+  const [{ user }, dispatchUserAction] = useContext(UserContext);
   //@ts-ignore
-  const alertCtxt = useContext(AlertContext);
+  const [{ alerts }, dispatchAlertsAction] = useContext(AlertContext);
   const [loader, setLoader] = useState(false);
   const history = useHistory();
 
@@ -35,7 +34,6 @@ const LoginForm: React.FC<{}> = () => {
       password: passwordInput.current.value
     };
 
-    console.log(dispatch, state);
     setLoader(true);
     window.setTimeout(() => {
       apiUtils.post(
@@ -43,12 +41,14 @@ const LoginForm: React.FC<{}> = () => {
         data,
         (json: any) => {
           setLoader(false);
-          dispatch(userActions.login(json.token, json.user.username));
+          dispatchUserAction(userActions.login(json.token, json.user.username));
           history.push("/");
         },
-        errorMsg => {
+        (errorMsg: Error) => {
           setLoader(false);
-          alertCtxt.dispatch(alertActions.new(Level.ERROR, errorMsg));
+          dispatchAlertsAction(
+            alertsActions.new(Level.ERROR, errorMsg.message)
+          );
         }
       );
     }, 300);
@@ -58,13 +58,23 @@ const LoginForm: React.FC<{}> = () => {
   return (
     <FormWrapper onSubmit={submit}>
       <h4>Connexion</h4>
-      <label htmlFor="username">Nom d'utilisateur</label>
-      <input required type="text" ref={userInput} name="username" />
-      <label htmlFor="password">Mot de passe</label>
-      <input required type="password" name="password" ref={passwordInput} />
-      <Button type="submit" isLoading={loader}>
-        Go !
-      </Button>
+      <TextInput
+        name="username"
+        placeholder="John Doe"
+        label="Nom d'utilisateur"
+        type="text"
+        //@ts-ignore
+        ref={userInput}
+      />
+      <TextInput
+        name="password"
+        placeholder="mot de passe"
+        label="Mot de passe"
+        type="password"
+        //@ts-ignore
+        ref={passwordInput}
+      />
+      <Button type="submit" isLoading={loader} value="Ok" />
     </FormWrapper>
   );
 };

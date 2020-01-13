@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useReducer } from "react";
 
-import { AlertContext } from "./Alerts";
-// , actions as alertActions, Level
+import { AlertContext, actions as alertsActions, Level } from "./Alerts";
+import urls from "src/const/urls";
 
 interface User {
   name: string;
@@ -36,6 +36,7 @@ export const actions = {
 
 export const userReducer = (state: IState, action: any) => {
   console.log(action);
+
   switch (action.type) {
     case "LOG_IN":
       saveAuthentication(action.payload.token, action.payload.password);
@@ -65,33 +66,44 @@ const saveAuthentication = (token: string, username: string) => {
 const UserProvider: React.FC<{}> = props => {
   //@ts-ignore
   const [state, dispatch] = useContext(AlertContext);
+  const value = useReducer(userReducer, initialValue);
 
+  // all this belong to App and not to UserProvider
   useEffect(() => {
-    // const token = localStorage.getItem("token");
-    // if (token) {
-    //   fetch(urls.currentUser, {
-    //     headers: {
-    //       Authorization: `JWT ${token}`
-    //     }
-    //   })
-    //     .then(res => {
-    //       if (!res.ok) {
-    //         console.log(res);
-    //         dispatch(alertActions.new(Level.ERROR, JSON.stringify(res)));
-    //         // token has expired
-    //         // need error management here
-    //         // logout();
-    //       }
-    //       return res.json();
-    //     })
-    //     .then(json => {
-    //       saveAuthentication(token, json.username);
-    //     });
-    // }
-    // return () => {};
+    const token = localStorage.getItem("token");
+
+    const [{ user }, dispatchUser] = value;
+
+    console.log(user, dispatchUser, token);
+
+    if (!!token && !user) {
+      fetch(urls.currentUser, {
+        headers: {
+          Authorization: `JWT ${token}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            console.log(res);
+            dispatch(
+              alertsActions.new(
+                Level.ERROR,
+                "Token must be outdated. You have been logout"
+              )
+            );
+            // token has expired
+            // need error management here
+            dispatchUser(actions.logout());
+          }
+          return res.json();
+        })
+        .then(json => {
+          dispatchUser(actions.login(token, json.username));
+        });
+    }
+    return () => {};
   });
 
-  const value = useReducer(userReducer, initialValue);
   return (
     //@ts-ignore
     <UserContext.Provider value={value}>{props.children}</UserContext.Provider>

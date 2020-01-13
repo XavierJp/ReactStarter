@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { lighten, darken } from "polished";
 
-import { Alert, Level } from "../context/Alerts";
-import icons from "../static/icons";
-import style from "../const/style";
+import { Alert, Level } from "../../context/Alerts";
+import icons from "../../static/icons";
+import style from "../../const/style";
 
 interface IProps extends Alert {
   dismiss: () => void;
@@ -132,7 +132,7 @@ const AlertItem: React.FC<IProps> = props => {
   return (
     <AlertWrapper color={color} ref={wrapper}>
       <div>{levelIcon(level)}</div>
-      <div>{description}</div>
+      <div>{description || "An error has occured."}</div>
       <div onClick={animateAndDismiss}>{icons.cross}</div>
     </AlertWrapper>
   );

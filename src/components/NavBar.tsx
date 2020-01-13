@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { UserContext, actions } from "src/context/User";
-import style from "../const/style";
+import FancyLink from "src/uiComponents/FancyLink";
 
 const Bar = styled.div`
   width: calc(100% - 30px);
@@ -24,24 +24,7 @@ const LeftNav = styled.nav`
 `;
 
 const RightNav = styled.nav`
-    > a {
-      text-decoration: none;
-      color: ${style.colors.lightBlue};
-      font-weight: 600;
-      padding: 5px 0px;
-      margin: 0 3px;
-
-      &.signup {
-        border: 1px solid ${style.colors.lightBlue};
-        border-radius: 4px;
-
-        &:hover {
-          background-color: ${style.colors.lightBlue};
-          color: #fff;
-        }
-      }
-    }
-  }
+  flex-grow: 0;
 `;
 
 const NavBar: React.FC<{}> = () => {
@@ -53,17 +36,23 @@ const NavBar: React.FC<{}> = () => {
       <LeftNav>{user && `Hello ${user.name} 🤓`}</LeftNav>
       <RightNav>
         {user ? (
-          <Link to="/" onClick={() => dispatch(actions.logout())}>
-            Se déconnecter
-          </Link>
+          <FancyLink isUnderlined={true}>
+            <Link to="/login" onClick={() => dispatch(actions.logout())}>
+              Se déconnecter
+            </Link>
+          </FancyLink>
         ) : (
           <>
-            <Link className="login" to="/login">
-              Se connecter
-            </Link>
-            <Link className="signup" to="/signup">
-              S’inscrire
-            </Link>
+            <FancyLink isUnderlined={true}>
+              <Link className="login" to="/login">
+                Se connecter
+              </Link>
+            </FancyLink>
+            <FancyLink isButton={true}>
+              <Link className="signup" to="/signup">
+                S’inscrire
+              </Link>
+            </FancyLink>
           </>
         )}
       </RightNav>

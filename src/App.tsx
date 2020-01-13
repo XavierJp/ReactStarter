@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { UserProvider, AlertProvider } from "./context";
+import { AlertProvider } from "./context";
+import UserProvider from "src/context/User";
 import { AlertBanner } from "./components";
-// import urls from "./const/urls";
+//import urls from "./const/urls";
 import { NavBar } from "./components";
 import "./App.css";
 

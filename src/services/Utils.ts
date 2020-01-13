@@ -20,7 +20,7 @@ const post = (
   })
     .then(res => {
       if (!res.ok) {
-        throw new Error();
+        throw new Error(res.status.toString());
       }
       return res.json();
     })
