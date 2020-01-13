@@ -1,4 +1,5 @@
 {
+  "defaultSeverity": "warning",
   "rules": {
     //"prettier": true,
     "adjacent-overload-signatures": true, // Forces you to have your overload methods to follow each other.
