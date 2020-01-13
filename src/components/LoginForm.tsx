@@ -16,9 +16,9 @@ const LoginForm: React.FC<{}> = () => {
   const passwordInput = useRef<HTMLInputElement>(null);
 
   //@ts-ignore
-  const [{ user }, dispatchUserAction] = useContext(UserContext);
+  const [dispatchUserAction] = useContext(UserContext);
   //@ts-ignore
-  const [{ alerts }, dispatchAlertsAction] = useContext(AlertContext);
+  const [dispatchAlertsAction] = useContext(AlertContext);
   const [loader, setLoader] = useState(false);
   const history = useHistory();
 

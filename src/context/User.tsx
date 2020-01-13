@@ -65,7 +65,7 @@ const saveAuthentication = (token: string, username: string) => {
 
 const UserProvider: React.FC<{}> = props => {
   //@ts-ignore
-  const [state, dispatch] = useContext(AlertContext);
+  const [dispatch] = useContext(AlertContext);
   const value = useReducer(userReducer, initialValue);
 
   // all this belong to App and not to UserProvider
@@ -73,8 +73,6 @@ const UserProvider: React.FC<{}> = props => {
     const token = localStorage.getItem("token");
 
     const [{ user }, dispatchUser] = value;
-
-    console.log(user, dispatchUser, token);
 
     if (!!token && !user) {
       fetch(urls.currentUser, {
@@ -84,7 +82,6 @@ const UserProvider: React.FC<{}> = props => {
       })
         .then(res => {
           if (!res.ok) {
-            console.log(res);
             dispatch(
               alertsActions.new(
                 Level.ERROR,

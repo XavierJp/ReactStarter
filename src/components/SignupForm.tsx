@@ -13,7 +13,7 @@ const SignupForm: React.FC<{}> = () => {
   const passwordInput = useRef<HTMLInputElement>(null);
 
   //@ts-ignore
-  const [{ user }, dispatch] = useContext(UserContext);
+  const [dispatch] = useContext(UserContext);
   const [loader, setLoader] = useState(false);
 
   const submit = (e: FormEvent) => {
